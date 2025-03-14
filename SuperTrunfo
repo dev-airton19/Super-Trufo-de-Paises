@@ -1,0 +1,180 @@
+#include <stdio.h>
+#include <string.h>
+#include <locale.h>
+
+// Definição da estrutura Carta para armazenar os dados de cada carta
+typedef struct {
+    char estado[50];
+    int codigo;
+    char cidade[50];
+    long long populacao;
+    double pib;
+    double area;
+    int pontos_turisticos;
+    double densidade_populacional;
+    double pib_per_capita;
+} Carta;
+
+// Função para cadastrar os dados de uma carta
+void cadastrarCarta(Carta *carta) {
+    int resultado;
+
+    getchar(); // Limpa o buffer de entrada antes de fgets
+
+    // Loop para ler o estado, validando a entrada
+    printf("Digite o estado: ");
+    while (1) {
+        // Lê o estado com fgets
+        if (fgets(carta->estado, sizeof(carta->estado), stdin) == NULL) {
+            printf("Erro na leitura. Tente novamente: ");
+            continue;
+        }
+        // Remove o caractere de nova linha do final da string
+        carta->estado[strcspn(carta->estado, "\n")] = 0;
+        // Verifica se a string não está vazia
+        if (strlen(carta->estado) > 0) {
+            break; // Sai do loop se a entrada for válida
+        }
+        printf("Entrada inválida. Digite o estado novamente: ");
+    }
+
+    // Loop para ler o código da cidade, validando a entrada
+    printf("Digite o código da cidade: ");
+    while (scanf("%d", &carta->codigo) != 1) {
+        printf("Entrada inválida. Digite o código novamente: ");
+        while (getchar() != '\n'); // Limpa o buffer de entrada
+    }
+
+    getchar(); // Limpa o buffer antes de fgets
+
+    // Loop para ler o nome da cidade, validando a entrada
+    printf("Digite o nome da cidade: ");
+    while (1) {
+        // Lê o nome da cidade com fgets
+        if (fgets(carta->cidade, sizeof(carta->cidade), stdin) == NULL) {
+            printf("Erro na leitura. Tente novamente: ");
+            continue;
+        }
+        // Remove o caractere de nova linha do final da string
+        carta->cidade[strcspn(carta->cidade, "\n")] = 0;
+        // Verifica se a string não está vazia
+        if (strlen(carta->cidade) > 0) {
+            break; // Sai do loop se a entrada for válida
+        }
+        printf("Entrada inválida. Digite o nome novamente: ");
+    }
+
+    // Loop para ler a população, validando a entrada
+    printf("Digite a população: ");
+    while (scanf("%lld", &carta->populacao) != 1) {
+        printf("Entrada inválida. Digite a população novamente: ");
+        while (getchar() != '\n'); // Limpa o buffer de entrada
+    }
+
+    // Loop para ler o PIB, validando a entrada
+    printf("Digite o PIB: ");
+    while (scanf("%lf", &carta->pib) != 1) {
+        printf("Entrada inválida. Digite o PIB novamente: ");
+        while (getchar() != '\n'); // Limpa o buffer de entrada
+    }
+
+    // Loop para ler a área, validando a entrada
+    printf("Digite a área: ");
+    while (scanf("%lf", &carta->area) != 1) {
+        printf("Entrada inválida. Digite a área novamente: ");
+        while (getchar() != '\n'); // Limpa o buffer de entrada
+    }
+
+    // Loop para ler o número de pontos turísticos, validando a entrada
+    printf("Digite o número de pontos turísticos: ");
+    while (scanf("%d", &carta->pontos_turisticos) != 1) {
+        printf("Entrada inválida. Digite o número de pontos turísticos novamente: ");
+        while (getchar() != '\n'); // Limpa o buffer de entrada
+    }
+
+    // Calcula a densidade populacional e o PIB per capita
+    carta->densidade_populacional = (double)carta->populacao / carta->area;
+    carta->pib_per_capita = carta->pib / carta->populacao;
+}
+
+// Função para exibir os dados de uma carta
+void exibirCarta(Carta carta) {
+    printf("\n--- Carta Super Trunfo de Países ---\n");
+    printf("Estado: %s\n", carta.estado);
+    printf("Código: %d\n", carta.codigo);
+    printf("Cidade: %s\n", carta.cidade);
+    printf("População: %lld\n", carta.populacao);
+    printf("PIB: %.2lf\n", carta.pib);
+    printf("Área: %.2lf km²\n", carta.area);
+    printf("Pontos turísticos: %d\n", carta.pontos_turisticos);
+    printf("Densidade populacional: %.2lf hab/km²\n", carta.densidade_populacional);
+    printf("PIB per capita: %.2lf\n", carta.pib_per_capita);
+}
+
+// Função para comparar duas cartas com base em um atributo
+int compararCartas(Carta carta1, Carta carta2, int atributo) {
+    switch (atributo) {
+        case 1: // População
+            if (carta1.populacao > carta2.populacao) return 1;
+            else if (carta1.populacao < carta2.populacao) return -1;
+            else return 0;
+        case 2: // PIB
+            if (carta1.pib > carta2.pib) return 1;
+            else if (carta1.pib < carta2.pib) return -1;
+            else return 0;
+        case 3: // Área
+            if (carta1.area > carta2.area) return 1;
+            else if (carta1.area < carta2.area) return -1;
+            else return 0;
+        case 4: // Pontos turísticos
+            if (carta1.pontos_turisticos > carta2.pontos_turisticos) return 1;
+            else if (carta1.pontos_turisticos < carta2.pontos_turisticos) return -1;
+            else return 0;
+        case 5: // Densidade populacional
+            if (carta1.densidade_populacional > carta2.densidade_populacional) return 1;
+            else if (carta1.densidade_populacional < carta2.densidade_populacional) return -1;
+            else return 0;
+        case 6: // PIB per capita
+            if (carta1.pib_per_capita > carta2.pib_per_capita) return 1;
+            else if (carta1.pib_per_capita < carta2.pib_per_capita) return -1;
+            else return 0;
+        default:
+            return 0;
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, ""); // Configura o locale para o padrão do sistema
+    Carta carta1, carta2;
+    int opcao, atributo, resultado;
+
+    do {
+        // Menu principal
+        printf("\n--- Super Trunfo de Países ---\n");
+        printf("1. Cadastrar carta\n");
+        printf("2. Exibir carta\n");
+        printf("3. Comparar cartas\n");
+        printf("4. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1: // Cadastrar carta
+                printf("\n--- Cadastro de Carta ---\n");
+                cadastrarCarta(&carta1);
+                break;
+            case 2: // Exibir carta
+                printf("\n--- Exibir Carta ---\n");
+                exibirCarta(carta1);
+                break;
+            case 3: // Comparar cartas
+                printf("\n--- Comparar Cartas ---\n");
+                cadastrarCarta(&carta2);
+                printf("\nEscolha o atributo para comparar:\n");
+                printf("1. População\n2. PIB\n3. Área\n4. Pontos turísticos\n5. Densidade populacional\n6. PIB per capita\n");
+                scanf("%d", &atributo);
+                resultado = compararCartas(carta1, carta2, atributo);
+                if (resultado == 1) printf("\nA primeira carta vence!\n");
+                else if (resultado == -1) printf("\nA segunda carta vence!\n");
+                else printf("\nAs cartas empataram!\n");
+                break
